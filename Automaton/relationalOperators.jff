@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
+	<type>fa</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>162.0</x>
+			<y>54.0</y>
+			<initial/>
+		</state>
+		<state id="1" name="q1">
+			<x>392.0</x>
+			<y>129.0</y>
+		</state>
+		<state id="2" name="q2">
+			<x>283.0</x>
+			<y>208.0</y>
+			<label>Return(&gt;=, greaterEq_symb)</label>
+			<final/>
+		</state>
+		<state id="3" name="q3">
+			<x>539.0</x>
+			<y>297.0</y>
+			<label>returnToBuffer(); return(&gt;, greater_symb)</label>
+			<final/>
+		</state>
+		<state id="4" name="q4">
+			<x>672.0</x>
+			<y>53.0</y>
+		</state>
+		<state id="5" name="q5">
+			<x>787.0</x>
+			<y>101.0</y>
+			<label>return(&lt;&gt;, diff_symb)</label>
+			<final/>
+		</state>
+		<state id="6" name="q6">
+			<x>930.0</x>
+			<y>55.0</y>
+			<label>return(&lt;, lessEq_symb)</label>
+			<final/>
+		</state>
+		<state id="7" name="q7">
+			<x>600.0</x>
+			<y>171.0</y>
+			<label>returnToBuffer(); return(&lt;, less_symb)</label>
+			<final/>
+		</state>
+		<state id="8" name="q8">
+			<x>52.0</x>
+			<y>137.0</y>
+		</state>
+		<state id="9" name="q9">
+			<x>113.0</x>
+			<y>260.0</y>
+			<label>return(=, equal_symb)</label>
+			<final/>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>8</from>
+			<to>9</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>2</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>3</to>
+			<controlx>467</controlx>
+			<controly>213</controly>
+			<read/>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>5</to>
+			<read>&gt;</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>8</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>6</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>&gt;</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>4</to>
+			<read>&lt;</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>7</to>
+			<read/>
+		</transition>
+		<note>
+			<text/>
+			<x>2167.0</x>
+			<y>400.0</y>
+		</note>
+		<note>
+			<text>Lambda = other not explicited symbol</text>
+			<x>187.0</x>
+			<y>351.0</y>
+		</note>
+		<note>
+			<text>lknknln</text>
+			<x>996.0</x>
+			<y>1354.0</y>
+		</note>
+	</automaton>
+</structure>
