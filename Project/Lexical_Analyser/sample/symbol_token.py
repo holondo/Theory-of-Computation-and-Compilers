@@ -1,0 +1,3 @@
+class symbol:
+    str = ""
+    token = ""
