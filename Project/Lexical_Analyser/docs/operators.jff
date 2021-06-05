@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Created with JFLAP 7.1.--><structure>
+	<type>fa</type>
+	<automaton>
+		<!--The list of states.-->
+		<state id="0" name="q0">
+			<x>62.0</x>
+			<y>138.0</y>
+			<initial/>
+		</state>
+		<state id="1" name="q1">
+			<x>240.0</x>
+			<y>135.0</y>
+		</state>
+		<state id="2" name="q2">
+			<x>238.0</x>
+			<y>23.0</y>
+		</state>
+		<state id="4" name="q4">
+			<x>208.0</x>
+			<y>292.0</y>
+		</state>
+		<state id="5" name="q5">
+			<x>519.0</x>
+			<y>128.0</y>
+			<label>Return(&gt;=, GREATER_EQUAL_SIGN)</label>
+			<final/>
+		</state>
+		<state id="6" name="q6">
+			<x>512.0</x>
+			<y>262.0</y>
+			<label>Return char to stream; Return(&gt;, GREATER_SIGN)</label>
+			<final/>
+		</state>
+		<state id="7" name="q7">
+			<x>516.0</x>
+			<y>23.0</y>
+			<label>Return char to stream; return(=, EQUAL_SIGN))</label>
+			<final/>
+		</state>
+		<state id="9" name="q9">
+			<x>527.0</x>
+			<y>480.0</y>
+			<label>Return char to stream; Return(&lt;, LESSER_SIGN)</label>
+			<final/>
+		</state>
+		<state id="10" name="q10">
+			<x>531.0</x>
+			<y>606.0</y>
+			<label>Return(&lt;&gt;, DIFFERENT_SIGN)</label>
+			<final/>
+		</state>
+		<state id="11" name="q11">
+			<x>519.0</x>
+			<y>328.0</y>
+			<label>Return(&lt;=, LESSER_EQUAL_SIGN)</label>
+			<final/>
+		</state>
+		<!--The list of transitions.-->
+		<transition>
+			<from>2</from>
+			<to>7</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>4</to>
+			<controlx>104</controlx>
+			<controly>244</controly>
+			<read>&lt;</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>10</to>
+			<controlx>274</controlx>
+			<controly>541</controly>
+			<read>&gt;</read>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>1</to>
+			<read>&gt;</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>11</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>5</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>1</from>
+			<to>6</to>
+			<read/>
+		</transition>
+		<transition>
+			<from>0</from>
+			<to>2</to>
+			<read>=</read>
+		</transition>
+		<transition>
+			<from>4</from>
+			<to>9</to>
+			<controlx>326</controlx>
+			<controly>467</controly>
+			<read/>
+		</transition>
+		<note>
+			<text/>
+			<x>1301.0</x>
+			<y>83.0</y>
+		</note>
+		<note>
+			<text>Other char</text>
+			<x>998.0</x>
+			<y>535.0</y>
+		</note>
+		<note>
+			<text>Other char</text>
+			<x>1035.0</x>
+			<y>240.0</y>
+		</note>
+		<note>
+			<text>Other char</text>
+			<x>1007.0</x>
+			<y>14.0</y>
+		</note>
+	</automaton>
+</structure>
