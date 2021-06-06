@@ -1,11 +1,15 @@
 from flask import Flask, request, render_template,jsonify
+from transition_table import TransitionTable
+
 app = Flask(__name__)
 
 def do_something(text1,text2):
-   text1 = text1.upper()
-   text2 = text2.upper()
    combine = text1 + text2
-   return combine
+   symbols_table = TransitionTable('symbols.csv')
+
+   match = symbols_table.transition(int(text1),text2)
+
+   return match
 
 @app.route('/')
 def home():

@@ -31,13 +31,22 @@
 </script>
 
 <body>
-	<p>
-		Taking input from web<br><br>
-		Text_Value1<input type="text" id="text1" name="text1"><br><br>
-		Text_Value2<input type="text" id="text2" name="text2"><br><br>
-		<button id="clicked" onclick="myFunction()">Submit</button>
-	</p>
-	<div class="show-data">
+	<div style="width: 100%; display: table;">
+		<div style="display: table-row; height: 100px;">
+			<div style="width: 50%; display: table-cell; background: green;">
+				Left Div
+				<p>
+					Taking input from web<br><br>
+					Text_Value1<input type="text" id="text1" name="text1"><br><br>
+					Text_Value2<input type="text" id="text2" name="text2"><br><br>
+					<button id="clicked" onclick="myFunction()">Submit</button>
+				</p>
+			</div>
+			<div style="display: table-cell; background: blue;">
+				<div class="show-data">
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 
