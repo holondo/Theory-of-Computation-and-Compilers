@@ -2,8 +2,8 @@ import pandas as pd
 
 
 class TransitionTable:
-    def __init__(self):
-        self.df = pd.read_csv('TTable.csv')
+    def __init__(self, csvFile):
+        self.df = pd.read_csv(csvFile)
 
     def transition(self, currentState, symbol):
         match = self.df.iloc[currentState][symbol]
