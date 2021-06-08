@@ -21,6 +21,12 @@ class TransitionTable:
     
     def transition(self, currentState, symbol ):
         toReturn = self.state[currentState][symbol]
-        return toReturn
+        return int(toReturn)
+
+    def isFinal(self, currentState):
+        return self.state[currentState]["isfinal"]
+
+    def returnToStream(self, currentState):
+        return self.state[currentState]["returnToStream"] == "true"
 
 
