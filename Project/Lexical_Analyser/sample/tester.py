@@ -1,5 +1,4 @@
-from TransitionTable import TransitionTable
-from token import symbol
+from lexer import Lexer
 
-x = TransitionTable()
-print(x.transition(0, '>'))
+x = Lexer()
+print(x.lexicalAnalyzer(input()))

@@ -2,7 +2,7 @@ import string
 from TransitionTable import TransitionTable
 from symbol_token import TableOfSymbols
 
-class lexer:
+class Lexer:
     tableForTransitions = ""
     tableForSymbols = ""
     currentState = ""
