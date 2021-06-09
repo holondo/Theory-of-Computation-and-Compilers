@@ -1,0 +1,14 @@
+Nome,Retorno
+program,SYMB_PROGRAM
+begin,SYMB_BEGIN
+end,SYMB_END
+const,SYMB_CONST
+var,SYMB_VAR
+real,SYMB_TYPE
+integer,SYMB_TYPE
+if,SYMB_IF
+then,SYMB_THEN
+else,SYMB_ELSE
+read,SYMB_READ
+write,SYMB_WRITE
+while,SYMBE_WHILE
