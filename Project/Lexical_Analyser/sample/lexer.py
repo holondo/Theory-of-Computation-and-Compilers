@@ -1,6 +1,20 @@
 import string
-from TransitionTable import TransitionTable
-from symbol_token import TableOfSymbols
+
+from numpy import character
+from .TransitionTable import TransitionTable
+from .symbol_token import TableOfSymbols
+
+def cathegorizeChar(character):
+    if(character == " " or character == "\n" or character == "\0"):
+        return "blank"
+    elif(character in list(string.digits)):
+        return "digit"
+    elif(character in list(string.ascii_letters)):#if current character is in the alphabet
+        return "alpha"
+    elif character in ['.',';','=','<','>','(',')',':','+','-','*','{','}']:
+        return character
+
+    else: return "NOT_RECOGNIZED"
 
 class Lexer:
     tableForTransitions = ""
@@ -17,32 +31,26 @@ class Lexer:
         readStr = ""
 
         for i in strToProcess:
-            character = i
             readStr += i
-            if(i == " " or i == "\n" or i == "\t"):
-                character = "blank"
-            if(i.isnumeric()):
-                character = "digit"
-            else:
-                if(i in list(string.ascii_lowercase) or i in list(string.ascii_uppercase)):#if current character is in the alphabet
-                    character = "alpha"
+            character = cathegorizeChar(i)
 
-            self.currentState = self.tableForTransitions.transition(self.currentState, str(character))
-            
-            if(self.currentState == '-'):
-                return {readStr : "ERROR_"}
+            try:
+                self.currentState = self.tableForTransitions.transition(self.currentState, character)
+            except:
+                return [readStr , "ERROR_"]
 
-            tokenToReturn = self.tableForTransitions.isFinal(self.currentState)
+            tokenToReturn = self.tableForTransitions.isFinal(self.currentState) #if current state isn t final token = '-'
             if(tokenToReturn != "-"):
                 #return to stream
                 if(self.tableForTransitions.returnToStream(self.currentState)):
                     readStr = readStr[:-1] #slicing the last character
                     print(readStr)
+
                 #se id, buscar na tabela
                 if(tokenToReturn == "IDENTIFIER"):
                     if(self.tableForSymbols.inTableOfSymbols(readStr)):
                         tokenToReturn = self.tableForSymbols.inTableOfSymbols(readStr)
-
-                return {readStr : tokenToReturn}
+                
+                return [readStr, tokenToReturn]
         
-        return {readStr : "ERROR"}
+        return [readStr , "ERROR"]

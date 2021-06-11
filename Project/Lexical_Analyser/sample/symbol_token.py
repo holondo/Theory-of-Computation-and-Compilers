@@ -1,9 +1,11 @@
 import pandas as pd
+import os
 
 class TableOfSymbols:
     fileName = "symbols.csv"
     def __init__(self):
-        self.table = pd.read_csv(self.fileName, index_col = 'Nome')
+        filePath = os.path.join(os.path.dirname(__file__), self.fileName)
+        self.table = pd.read_csv(filePath, index_col = 'Nome')
 
     def inTableOfSymbols(self, strToVerify):
         try:            
