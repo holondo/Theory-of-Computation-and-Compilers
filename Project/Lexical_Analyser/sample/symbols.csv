@@ -11,4 +11,4 @@ then,SYMB_THEN
 else,SYMB_ELSE
 read,SYMB_READ
 write,SYMB_WRITE
-while,SYMBE_WHILE
+while,SYMB_WHILE
