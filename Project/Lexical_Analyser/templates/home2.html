@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lexical Analyser</title>
+
+        <style>
+            body {
+                background-color: rgba(255, 255, 255, 0.884);
+                }
+
+            .fileDiv{
+                position: relative;
+                min-height: 200px;
+                min-width: 200px;
+                max-width: max-content;
+                border-style: dotted;
+            }
+
+            .txtFile{
+                min-height: 200px;
+                min-width: 400px;
+                width: auto;
+                height: auto;
+            }
+            .resultDiv{
+                position: relative;
+                
+                min-height: 200px;
+                min-width: 200px;
+                max-width: max-content;
+                border-style: dotted;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>P-- Lexical Analyser</h1>
+
+        <div class="fileDiv">
+            <form  method="POST""> 
+                <textarea name="txtProgram" class="txtFile"></textarea>
+                <button type="submit" title="Analyze">Analyze </button>
+                <script type="text/javascript">    
+                </script>
+            </form>
+        </div>
+        <div class="resultDiv">
+            <h2>String:token</h2>
+            {% if boolResult %}
+            {% for j in strProgram%}
+                <p>{{j}}</p>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </body>
+</html> 
