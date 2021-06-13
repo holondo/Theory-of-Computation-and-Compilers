@@ -1,10 +1,10 @@
 import string
 
-from numpy import character
 from .TransitionTable import TransitionTable
 from .symbol_token import TableOfSymbols
 
 def cathegorizeChar(character):
+    # Defines character inside automaton's alphabet
     if(character == " " or character == "\n" or character == "\0"):
         return "blank"
     elif(character in list(string.digits)):
