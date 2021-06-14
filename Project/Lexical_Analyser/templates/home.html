@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexical Analyser</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        body{
+    background-color: rgba(255, 255, 255, 0.884);
+}
+
+.row{
+    max-width: 100vw;
+}
+
+.fileDiv{
+    position: relative;
+    min-height: 200px;
+    min-width: 200px;
+    max-width: max-content;
+    border-style: dotted;
+}
+
+.txtFile{
+    min-height: 350px;
+    width: 550px;
+    height: auto; 
+    border-width: 2px;
+    border-color: #5543ca;
+}
+.resultDiv{
+    position: relative;
+    min-height: 200px;
+    width: 200px;
+    max-width: max-content;
+}
+
+.imput-output{
+    min-height: 100vh;
+    width: 100vw;
+    display: table-cell; 
+}
+
+.imput{
+    background-image: linear-gradient(125deg, #a72879, #064497);
+}
+
+.output{
+    background-image: linear-gradient(85deg, #064497, #38db61);
+}
+
+.imput-camps, .show-data{
+    min-width: 80%;
+    min-height: 85%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px 0px rgba(0, 0, 0, 0.1);
+    font-size: 15px;
+}
+
+.titulo{
+    margin-bottom: 20px;
+    color: #3a2d92;
+    background-image: linear-gradient(120deg, #a72879, #064497);
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    text-transform: uppercase;
+    font-size: 2.5em;
+    
+}
+
+.titulo2{
+    position: absolute;
+    top: 80px;
+}
+
+.subTitulo{
+    margin-bottom: 20px;
+    color: #3a2d92;
+    background-image: linear-gradient(120deg, #a72879, #064497);
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    font-size: 1.5em;
+}
+
+.button{
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #fff;
+    font-size: 16px;
+    padding: 8px 16px;
+    border: none;
+    margin-top: 10px;
+    width: 200px;
+    background-image: linear-gradient(120deg, #a72879, #064497);
+}
+
+.button:hover{
+    background-image: linear-gradient(120deg, #064497, #a72879);
+}
+
+.tg{
+    overflow: auto;
+    max-height: 100vh;
+    width: 480px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background:#5543ca; 
+}
+    </style>
+</head>
+    <body>
+        <div class="containe-fluid">
+            <div class="row">
+                <div class="imput-output col-md-6 imput d-flex align-items-center justify-content-center">
+					<div class="imput-camps d-flex flex-column justify-content-center">
+                        <h1 class="titulo text-center">P-- Lexical Analyser</h1>
+                        <h2 class="subTitulo text-center">Selecione o arquivo com o código fonte e clique em "ANALYSE"</h2>
+                        <div class="d-flex justify-content-center">
+
+
+                            <form class="d-flex flex-column" method="POST" enctype=multipart/form-data>
+                                <input type=file name=file>
+                                <div class="d-flex justify-content-end">
+                                    <button class="button" type="submit" title="Analyze">Analyse </button>
+                                </div>
+                            </form>
+
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="imput-output col-md-6 output d-flex align-items-center justify-content-center">
+                    <div class="show-data d-flex flex-column align-items-center justify-content-center">
+                        
+                        <h2 class="subTitulo text-center">[ Cadeia lida , Token correspondente]</h2>
+                        <div class="tg d-flex flex-column align-items-center justify-content-center">
+                            {% if boolResult %}
+                            {% for j in strProgram%}
+                                <p>{{j}}</p>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</html>
