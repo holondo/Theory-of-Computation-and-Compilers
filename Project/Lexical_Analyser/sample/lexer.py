@@ -34,10 +34,14 @@ class Lexer:
             readStr += i
             character = cathegorizeChar(i)
 
+            self.currentState = self.tableForTransitions.transition(self.currentState, character)
             try:
-                self.currentState = self.tableForTransitions.transition(self.currentState, character)
+                self.currentState = int(self.currentState)
             except:
-                return [readStr , "ERROR_"]
+                if(self.currentState == '-'):
+                    return [readStr + self.currentState , "ERROR_"]
+                else:
+                    return [readStr , self.currentState]
 
             tokenToReturn = self.tableForTransitions.isFinal(self.currentState) #if current state isn t final token = '-'
             if(tokenToReturn != "-"):

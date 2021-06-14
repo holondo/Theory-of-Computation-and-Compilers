@@ -24,7 +24,7 @@ class TransitionTable:
             toReturn = self.state[currentState][symbol]
         except:
             toReturn = self.state[currentState]['blank']
-        return int(toReturn)
+        return toReturn
 
     def isFinal(self, currentState):
         return self.state[currentState]["isfinal"]
