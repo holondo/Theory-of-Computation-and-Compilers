@@ -1,6 +1,10 @@
 # Theory-of-Computation-and-Compilators
 
 ## Instalação
+O projeto python está na pasta /Project/Lexical_Analyser/
+```bash
+cd /Project/Lexical_Analyser/
+```
 Use o package manager [pip](https://pip.pypa.io/en/stable/) para instalar as bibliotecas necessárias para o projeto.
 
 ```bash
@@ -10,8 +14,6 @@ pip install -r requirements.txt
 No diretório fonte:
 
 ```bash
-cd /Project/Lexical_Analyser/
-
 flask run
 ```
 
