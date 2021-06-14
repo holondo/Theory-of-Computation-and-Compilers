@@ -19,11 +19,11 @@ def home():
         file = open(filePath, 'r')
         show = sourceToLexer(file.read()) #Sends txtProgram's content to the "Parser" who returns Lexer's work
 
-        return render_template("home2.html", boolResult=True, strProgram=show)
+        return render_template("home.html", boolResult=True, strProgram=show)
 
     #If the app receives a GET method
     else:
-        return render_template("home2.html", boolResult=False, strProgram=[])
+        return render_template("home.html", boolResult=False, strProgram=[])
 
 if (__name__ == "__main__"):
     app.run()

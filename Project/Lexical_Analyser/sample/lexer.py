@@ -44,7 +44,6 @@ class Lexer:
                 #return to stream
                 if(self.tableForTransitions.returnToStream(self.currentState)):
                     readStr = readStr[:-1] #slicing the last character
-                    print(readStr)
 
                 #se id, buscar na tabela
                 if(tokenToReturn == "IDENTIFIER"):
