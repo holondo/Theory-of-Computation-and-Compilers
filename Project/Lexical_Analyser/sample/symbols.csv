@@ -12,4 +12,4 @@ else,ELSE_SYMB
 read,READ_SYMB
 write,WRITE_SYMB
 while,WHILE_SYMB
-for, FOR_SYMB
+for,FOR_SYMB
