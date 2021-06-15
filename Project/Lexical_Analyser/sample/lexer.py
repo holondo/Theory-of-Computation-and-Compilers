@@ -43,7 +43,7 @@ class Lexer:
                 else:
                     return [readStr , self.currentState]
 
-            tokenToReturn = self.tableForTransitions.isFinal(self.currentState) #if current state isn t final token = '-'
+            tokenToReturn = self.tableForTransitions.isFinal(self.currentState)#if current state isn t final token == '-'
             if(tokenToReturn != "-"):
                 #return to stream
                 if(self.tableForTransitions.returnToStream(self.currentState)):
