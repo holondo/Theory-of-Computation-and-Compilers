@@ -1,4 +1,4 @@
-# Theory-of-Computation-and-Compilators
+# Theory-of-Computation-and-Compilers
 
 ## Instalação
 O projeto python está na pasta /Project/Lexical_Analyser/
