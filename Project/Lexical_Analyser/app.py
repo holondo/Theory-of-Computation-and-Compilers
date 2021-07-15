@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect
 from sample.lexerDeliver import sourceToLexer
+from sample.SyntacticAnalyser import SyntacticAnalyser
 
 UPLOAD_FOLDER = "./uploads"
 app = Flask(__name__)
@@ -17,9 +18,12 @@ def home():
         filePath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filePath)        
         file = open(filePath, 'r')
-        show = sourceToLexer(file.read()) #Sends txtProgram's content to the "Parser" who returns Lexer's work
+        #show = sourceToLexer(file.read()) #Sends txtProgram's content to the "Parser" who returns Lexer's work
+        strProgram = file.read()
+        analyser = SyntacticAnalyser()
+        show = analyser.analyse(strProgram)
 
-        return render_template("home.html", boolResult=True, strProgram=show)
+        return render_template("home.html", boolResult=True, strProgram=strProgram.split('\n'), messages= show)
 
     #If the app receives a GET method
     else:
