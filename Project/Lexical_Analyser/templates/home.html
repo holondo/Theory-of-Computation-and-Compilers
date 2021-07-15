@@ -138,18 +138,24 @@
                                     <button class="button" type="submit" title="Analyze">Analyse </button>
                                 </div>
                             </form>
-
+                            
                             
                         </div>
+                        {%if boolResult%}
+                        <div class="tg d-flex flex-column align-items-center justify-content-center">
+                        <p><h2 class="subTitulo text-center">Código:</h2></p>
+                            <p>{{strProgram}}</p>
+                        </div>
+                        {%endif%}
                     </div>
                 </div>
                 <div class="imput-output col-md-6 output d-flex align-items-center justify-content-center">
                     <div class="show-data d-flex flex-column align-items-center justify-content-center">
                         
-                        <h2 class="subTitulo text-center">[ Cadeia lida , Token correspondente]</h2>
+                        <h2 class="subTitulo text-center">Mensagens da compilação:</h2>
                         <div class="tg d-flex flex-column align-items-center justify-content-center">
                             {% if boolResult %}
-                            {% for j in strProgram%}
+                            {% for j in messages%}
                                 <p>{{j}}</p>
                             {% endfor %}
                             {% endif %}
