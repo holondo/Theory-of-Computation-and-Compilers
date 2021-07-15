@@ -11,7 +11,7 @@ def cathegorizeChar(character):
         return "digit"
     elif(character in list(string.ascii_letters)):#if current character is in the alphabet
         return "alpha"
-    elif character in ['.',';','=','<','>','(',')',':','+','-','*','{','}']:
+    elif character in ['.',';','=','<','>','(',')',':','+','-','*','{','}',',']:
         return character
 
     else: return "NOT_RECOGNIZED"

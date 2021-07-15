@@ -1,9 +1,10 @@
 Name,Token
-program,PROGRAM_SYMB
+Program,PROGRAM_SYMB
 begin,BEGIN_SYMB
 end,END_SYMB
 const,CONST_SYMB
 var,VAR_SYMB
+procedure,PROCEDURE_SYMB
 real,TYPE_SYMB
 integer,TYPE_SYMB
 if,IF_SYMB

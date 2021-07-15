@@ -9,7 +9,7 @@ class TransitionTable:
         stateTransitions = {}
         filePath = os.path.join(os.path.dirname(__file__), self.fileName) 
         with open(filePath, 'r') as fp:
-            CSVReader = csv.reader(fp)
+            CSVReader = csv.reader(fp, delimiter='|')
             lines = list(CSVReader)
 
             for i in range(1, len(lines)): #For each state in csv, make a dictionary
