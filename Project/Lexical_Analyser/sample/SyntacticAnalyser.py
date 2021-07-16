@@ -74,6 +74,23 @@ class SyntacticAnalyser:
             self.loadNextSymbol()
         
         return False
+    
+    def verifyNecessaryToken(self,expectedToken, errorMessage, tokenNext, ruleNext)-> bool:
+        if self.getCurrentToken() in expectedToken:
+                self.loadNextSymbol()
+        else:
+            if self.error(errorMessage, currentNext= tokenNext, productionNext= ruleNext) == False:
+                return False
+        return True
+    
+    def verifyPossibleToken(self,expectedToken, errorMessage, tokenNext, ruleNext)-> bool:
+        if self.getCurrentToken() in expectedToken:
+                self.loadNextSymbol()
+        else:
+            if self.error(errorMessage, currentNext= tokenNext, productionNext= ruleNext) == False:
+                self.errors.pop()
+                return False
+        return True
 
 
     #|/|/|/|/|/|/| Production Rulez
@@ -99,11 +116,12 @@ class SyntacticAnalyser:
 
         self.prod_Body()
 
-        if self.isCurrentToken("DOT_SYMB"):
-            self.loadNextSymbol()
-        else:
-            if self.error("Ponto final esperado.", currentNext= FILE_END, productionNext= FILE_END) == False:
-                return
+        if self.verifyNecessaryToken("DOT_SYMB", "Ponto final esperado.", FILE_END, FILE_END): return
+        # if self.isCurrentToken("DOT_SYMB"):
+        #     self.loadNextSymbol()
+        # else:
+        #     if self.error("Ponto final esperado.", currentNext= FILE_END, productionNext= FILE_END) == False:
+        #         return
     
     def prod_Body(self):
 
@@ -118,7 +136,7 @@ class SyntacticAnalyser:
 
         self.prod_dc_p()
         while self.isCurrentToken("PROCEDURE_SYMB"):
-            self.prod_dc_v()
+            self.prod_dc_p()
         #-----DECLARATIONS END
 
         if self.isCurrentToken("BEGIN_SYMB"):
@@ -169,43 +187,94 @@ class SyntacticAnalyser:
         
     
     def prod_dc_v(self):
+        productionNext = ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]
         if self.isCurrentToken("VAR_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("var esperado.", currentNext= "IDENTIFIER", productionNext= ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]) == False:
+            if self.error("var esperado.", currentNext= "IDENTIFIER", productionNext= productionNext) == False:
                 self.errors.pop()
                 return
 
         #<variaveis>
-        while True:
-            if self.isCurrentToken("IDENTIFIER"):
-                self.loadNextSymbol()
-            else:
-                if self.error("Identificador da variável esperado.", currentNext= ["COMMA_SYMB", "COLON_SYMB"], productionNext= ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]) == False:
-                    return
-
-            if self.isCurrentToken("COMMA_SYMB"):
-                self.loadNextSymbol()
-            else:
-                break
+        if not self.prod_Variables(["COLON_SYMB"],productionNext):
+            return
             
         if self.isCurrentToken("COLON_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("Dois pontos esperado.", currentNext= "TYPE_SYMB", productionNext= ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]) == False:
+            if self.error("Dois pontos esperado.", currentNext= "TYPE_SYMB", productionNext= productionNext) == False:
                 return
         
         if self.isCurrentToken("TYPE_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("Tipo esperado.", currentNext= "SEMICOLON_SYMB", productionNext= ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]) == False:
+            if self.error("Tipo esperado.", currentNext= "SEMICOLON_SYMB", productionNext= productionNext) == False:
                 return
         
         if self.isCurrentToken("SEMICOLON_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("; esperado.", currentNext= ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"], productionNext= ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]) == False:
+            if self.error("; esperado.", currentNext= productionNext, productionNext= productionNext) == False:
                 return
 
     def prod_dc_p(self):
-        pass
+        thisRulesNextSymbol  = ["PROCEDURE_SYMB", "BEGIN_SYMB"]
+        if self.isCurrentToken("PROCEDURE_SYMB"):
+            self.loadNextSymbol()
+        else:
+            if self.error("procedure esperado.", currentNext= "IDENTIFIER", productionNext = thisRulesNextSymbol) == False:
+                self.errors.pop()
+                return
+
+        if self.isCurrentToken("IDENTIFIER"):
+                self.loadNextSymbol()
+        else:
+            if self.error("Identificador da funcao esperado.", currentNext= ["LEFT_PARENTHESIS", "SEMICOLON_SYMB"], productionNext = thisRulesNextSymbol) == False:
+                return
+        
+        self.prod_Procedure_Parameters()
+        
+        if self.isCurrentToken("SEMICOLON_SYMB"):
+            self.loadNextSymbol()
+        else:
+            if self.error("; esperado.", currentNext= ["VAR_SYMB", "BEGIN_SYMB"], productionNext = thisRulesNextSymbol) == False:
+                return
+
+        #self.prod_Procedure_Body()
+    
+    def prod_Variables(self, tokenNextSymbols, originNextSymbols)-> bool:
+        tokenNextSymbols.append("COMMA_SYMB")
+        while True:
+            if not self.verifyNecessaryToken("IDENTIFIER", "Identificador da variável esperado.", tokenNextSymbols, originNextSymbols):
+                return False
+
+
+            if self.isCurrentToken("COMMA_SYMB"):
+                self.loadNextSymbol()
+            else:
+                break
+        return True
+
+    def prod_Procedure_Parameters(self):
+        ruleNext = "SEMICOLON_SYMB"
+        if not self.verifyPossibleToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", ruleNext):
+            return
+        
+        #Parameters list
+        while True:
+            if not self.prod_Variables(["SEMICOLON_SYMB"], ruleNext):
+                return
+            
+            if not self.verifyNecessaryToken("COLON_SYMB", "':' esperado.", "TYPE_SYMB", ruleNext):
+                return
+            
+            if not self.verifyNecessaryToken("TYPE_SYMB", "Tipo esperado.", ["RIGHT_PARENTHESIS","SEMICOLON_SYMB"], ruleNext):
+                return
+            
+            if self.isCurrentToken("SEMICOLON_SYMB"):
+                self.loadNextSymbol()
+            else:
+                break
+        
+        if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", ruleNext, ruleNext):        
+            return
