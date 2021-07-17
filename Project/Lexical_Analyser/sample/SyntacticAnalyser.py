@@ -197,7 +197,7 @@ class SyntacticAnalyser:
         if self.isCurrentToken("COLON_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("Dois pontos esperado.", currentNext= "TYPE_SYMB", productionNext= productionNext) == False:
+            if not self.error("Dois pontos esperado.", currentNext= "TYPE_SYMB", productionNext= productionNext):
                 return
         
         if self.isCurrentToken("TYPE_SYMB"):
