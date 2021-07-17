@@ -1,4 +1,4 @@
-from numpy import equal
+from numpy import equal, load
 from .lexer import Lexer
 
 FILE_END = " "
@@ -117,11 +117,6 @@ class SyntacticAnalyser:
         self.prod_Body()
 
         if self.verifyNecessaryToken("DOT_SYMB", "Ponto final esperado.", FILE_END, FILE_END): return
-        # if self.isCurrentToken("DOT_SYMB"):
-        #     self.loadNextSymbol()
-        # else:
-        #     if self.error("Ponto final esperado.", currentNext= FILE_END, productionNext= FILE_END) == False:
-        #         return
     
     def prod_Body(self):
 
@@ -233,7 +228,7 @@ class SyntacticAnalyser:
                 return
         
         self.prod_Procedure_Parameters()
-        
+
         if self.isCurrentToken("SEMICOLON_SYMB"):
             self.loadNextSymbol()
         else:
@@ -242,8 +237,8 @@ class SyntacticAnalyser:
 
         #self.prod_Procedure_Body()
     
-    def prod_Variables(self, tokenNextSymbols, originNextSymbols)-> bool:
-        tokenNextSymbols.append("COMMA_SYMB")
+    def prod_Variables(self, originNextSymbols)-> bool:
+        tokenNextSymbols = list(originNextSymbols).append("COMMA_SYMB")
         while True:
             if not self.verifyNecessaryToken("IDENTIFIER", "Identificador da variável esperado.", tokenNextSymbols, originNextSymbols):
                 return False
@@ -262,7 +257,7 @@ class SyntacticAnalyser:
         
         #Parameters list
         while True:
-            if not self.prod_Variables(["SEMICOLON_SYMB"], ruleNext):
+            if not self.prod_Variables(ruleNext):
                 return
             
             if not self.verifyNecessaryToken("COLON_SYMB", "':' esperado.", "TYPE_SYMB", ruleNext):
@@ -278,3 +273,48 @@ class SyntacticAnalyser:
         
         if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", ruleNext, ruleNext):        
             return
+    
+    def prod_Commands(self):
+        ruleNext = ["END_SYMB", "DOT_SYMB"]
+        cmdTokens = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB"]
+        allNexts = ruleNext + cmdTokens + "SEMICOLON_SYMB"
+        
+        while True:
+            if self.isCurrentToken(ruleNext):
+                return
+
+            self.prod_CMD(allNexts)
+
+            self.verifyNecessaryToken("SEMICOLON_SYMB", "';' esperado.", cmdTokens, cmdTokens + ruleNext)
+
+            if self.getCurrentToken() not in cmdTokens:#mudar o not in p/ todos pq se o comportamento for inesperado, para
+                return
+
+    def prod_CMD(self, productionNext):
+
+        if self.isCurrentToken("WRITE_SYMB"):
+            self.loadNextSymbol()
+
+            if not self.verifyNecessaryToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", productionNext):
+                return
+            
+            self.prod_Variables(productionNext)
+
+            if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", productionNext, productionNext):
+                return
+
+        elif self.isCurrentToken("IDENTIFIER"):
+            self.loadNextSymbol()
+
+            if self.getCurrentToken() == "ATTR_SYMB":
+                self.loadNextSymbol()
+
+                if self.getCurrentToken() in ["ADD_SIGN", "SUB_SIGN"]:
+                    self.loadNextSymbol()
+
+                #if self.getCurrentToken() in 
+            
+            #elif 
+
+        else:
+            self.error("Comando esperado.", productionNext, productionNext)
