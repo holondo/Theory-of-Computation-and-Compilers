@@ -1,4 +1,6 @@
+from os import error
 from numpy import equal, load
+from werkzeug.utils import send_file
 from .lexer import Lexer
 
 FILE_END = " "
@@ -13,7 +15,7 @@ class SyntacticAnalyser:
         self.lexer = Lexer()
     
     def programIsProcessed(self) -> bool:
-        if self.strProgram == "": 
+        if len(self.strProgram) <= 1: 
             return True
         return False
 
@@ -68,7 +70,7 @@ class SyntacticAnalyser:
         if self.getCurrentToken() in productionNext:
             return False
 
-        while not self.programIsProcessed() and self.getCurrentToken() not in productionNext:
+        while (not self.programIsProcessed()) and self.getCurrentToken() not in productionNext:
             if productionNext == FILE_END and self.getCurrentSymbol() == FILE_END:
                 return False
             self.loadNextSymbol()
@@ -140,7 +142,7 @@ class SyntacticAnalyser:
             if self.error("begin esperado.", currentNext= ["WRITE_SYMB", "WHILE_SYMB", "IF_SYMB", "IDENTIFIER", "BEGIN","END_SYMB"], productionNext= "DOT_SYMB") == False:
                 return
 
-        #####TODO <COMANDOS>
+        self.prod_Commands()
 
         if self.isCurrentToken("END_SYMB"):
             self.loadNextSymbol()
@@ -191,7 +193,7 @@ class SyntacticAnalyser:
                 return
 
         #<variaveis>
-        if not self.prod_Variables(["COLON_SYMB"],productionNext):
+        if not self.prod_Variables(["COLON_SYMB"]+productionNext):
             return
             
         if self.isCurrentToken("COLON_SYMB"):
@@ -251,14 +253,13 @@ class SyntacticAnalyser:
         return True
 
     def prod_Procedure_Parameters(self):
-        ruleNext = "SEMICOLON_SYMB"
+        ruleNext = ["SEMICOLON_SYMB"]
         if not self.verifyPossibleToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", ruleNext):
             return
         
         #Parameters list
         while True:
-            if not self.prod_Variables(ruleNext):
-                return
+            self.prod_Variables(ruleNext + ["COLON_SYMB"])
             
             if not self.verifyNecessaryToken("COLON_SYMB", "':' esperado.", "TYPE_SYMB", ruleNext):
                 return
@@ -276,8 +277,8 @@ class SyntacticAnalyser:
     
     def prod_Commands(self):
         ruleNext = ["END_SYMB", "DOT_SYMB"]
-        cmdTokens = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB"]
-        allNexts = ruleNext + cmdTokens + "SEMICOLON_SYMB"
+        cmdTokens = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
+        allNexts = ruleNext + cmdTokens + ["SEMICOLON_SYMB"]
         
         while True:
             if self.isCurrentToken(ruleNext):
@@ -292,16 +293,17 @@ class SyntacticAnalyser:
 
     def prod_CMD(self, productionNext):
 
-        if self.isCurrentToken("WRITE_SYMB"):
+        if self.isCurrentToken("WRITE_SYMB") or self.isCurrentToken("READ_SYMB"):
             self.loadNextSymbol()
 
             if not self.verifyNecessaryToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", productionNext):
                 return
             
-            self.prod_Variables(productionNext)
+            self.prod_Variables2(productionNext + ["RIGHT_PARENTHESIS"])
 
             if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", productionNext, productionNext):
                 return
+        
 
         elif self.isCurrentToken("IDENTIFIER"):
             self.loadNextSymbol()
@@ -309,12 +311,166 @@ class SyntacticAnalyser:
             if self.getCurrentToken() == "ATTR_SYMB":
                 self.loadNextSymbol()
 
-                if self.getCurrentToken() in ["ADD_SIGN", "SUB_SIGN"]:
-                    self.loadNextSymbol()
-
-                #if self.getCurrentToken() in 
+                self.prod_Expression(productionNext)
             
-            #elif 
+            elif self.isCurrentToken("LEFT_PARENTHESIS"):
+                self.loadNextSymbol()
+
+                if self.isCurrentToken("IDENTIFIER"):
+                    while True:
+                        if not self.verifyNecessaryToken("IDENTIFIER", "Parametro esperado.", ["SEMICOLON_SYMB", "RIGHT_PARENTHESIS"], productionNext):
+                            return
+                        
+                        if not self.isCurrentToken("SEMICOLON_SYMB"):
+                            break
+                        self.loadNextSymbol()
+
+                if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", "DO_SYMB", productionNext):
+                    return
+        
+        elif self.isCurrentToken("BEGIN_SYMB"):#begin <comandos> end
+            self.prod_Begin(productionNext)
+
+        elif self.isCurrentToken("WHILE_SYMB"):
+            self.loadNextSymbol()
+
+            CMDFirst = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
+
+            if not self.verifyNecessaryToken("LEFT_PARENTHESIS", "'(' esperado.", ["ADD_SIGN", "SUB_SIGN", "IDENTIFIER","UNSIGNED_INTEGER", "UNSIGNED_FLOAT", "LEFT_PARENTHESIS"], productionNext):
+                return
+            
+            self.prod_Condition(productionNext + ["RIGHT_PARENTHESIS"])
+
+            if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", "DO_SYMB", productionNext):
+                return
+
+            if not self.verifyNecessaryToken("DO_SYMB", "while necessita do.", CMDFirst, productionNext):
+                return
+            self.prod_CMD(productionNext)
+        
+        elif self.isCurrentToken("IF_SYMB"):
+            self.loadNextSymbol()
+
+            CMDFirst = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
+
+            self.prod_Condition(productionNext + ["THEN_SYMB"])
+
+            if not self.verifyNecessaryToken("THEN_SYMB", "then esperado.", CMDFirst, productionNext):
+                return
+
+            self.prod_CMD(productionNext + ["ELSE_SYMB"])
+            
+            if self.isCurrentToken("ELSE_SYMB"):
+                self.prod_CMD()
+
+        elif self.isCurrentToken("FOR_SYMB"):
+            ExpressionFirst = ["ADD_SIGN", "SUB_SIGN", "IDENTIFIER","UNSIGNED_INTEGER", "UNSIGNED_FLOAT", "LEFT_PARENTHESIS"]
+            CMDFirst = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
+
+            self.loadNextSymbol()
+
+            if not self.verifyNecessaryToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", productionNext):
+                return
+
+            if not self.verifyNecessaryToken("IDENTIFIER", "iterador esperado.", "ATTR_SYMB", productionNext):
+                return
+
+            if not self.verifyNecessaryToken("ATTR_SYMB", "':=' esperado.", ExpressionFirst, productionNext):
+                return
+            
+            self.prod_Expression(productionNext + ["SEMICOLON_SYMB"])
+
+            if not self.verifyNecessaryToken("SEMICOLON_SYMB", "';' esperado.", ExpressionFirst, productionNext):
+                return
+
+            self.prod_Condition(productionNext + ["SEMICOLON_SYMB"])
+
+            if not self.verifyNecessaryToken("SEMICOLON_SYMB", "';' esperado.", CMDFirst, productionNext):
+                return
+            
+            self.prod_CMD(productionNext + ["RIGHT_PARENTHESIS"])
+
+            if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", CMDFirst, productionNext):
+                return
+
+            self.prod_CMD(productionNext)
+            
 
         else:
             self.error("Comando esperado.", productionNext, productionNext)
+
+    def prod_Condition(self, productionNext):
+        ExpressionFirst = ["ADD_SIGN", "SUB_SIGN", "IDENTIFIER","UNSIGNED_INTEGER", "UNSIGNED_FLOAT", "LEFT_PARENTHESIS"]
+        self.prod_Expression(productionNext + ExpressionFirst)
+
+
+        if self.getCurrentToken() in ["EQUAL_SIGN", "DIFF_SIGN", "LESS_SIGN", "LESS_EQUAL_SIGN", "GREATER_SIGN", "GREATER_EQUAL_SIGN"]:
+            self.loadNextSymbol()
+        else:
+            if not self.error("Operador relacional esperado.", ExpressionFirst, productionNext):
+                return
+        
+        self.prod_Expression(productionNext)
+
+    def prod_Begin(self, productionNext):
+        if self.isCurrentToken("BEGIN_SYMB"):
+            self.loadNextSymbol()
+        else:
+            if self.error("begin esperado.", currentNext= ["WRITE_SYMB", "WHILE_SYMB", "IF_SYMB", "IDENTIFIER", "BEGIN","END_SYMB"], productionNext= "DOT_SYMB") == False:
+                return
+        
+        self.prod_Commands()
+
+        if self.isCurrentToken("END_SYMB"):
+            self.loadNextSymbol()
+        else:
+            if self.error("End; esperado.", currentNext= productionNext, productionNext= productionNext) == False:
+                return
+
+    def prod_Expression(self, productionNext):
+        if self.getCurrentToken() in ["ADD_SIGN", "SUB_SIGN"]:
+            self.loadNextSymbol()
+        while True:
+            self.prod_Factor(productionNext)
+
+            self.prod_Other_Factors(productionNext)
+
+            if self.getCurrentToken() not in ["ADD_SIGN", "SUB_SIGN"]:
+                return
+
+            self.loadNextSymbol()
+        
+
+    def prod_Factor(self, productionNext):
+        if self.getCurrentToken() in ["IDENTIFIER", "UNSIGNED_INTEGER", "UNSIGNED_FLOAT"]:
+            self.loadNextSymbol()
+
+        elif self.isCurrentToken("LEFT_PARENTHESIS"):
+            self.loadNextSymbol()
+
+            self.prod_Expression(productionNext)
+
+            if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", productionNext, productionNext):
+                return           
+        
+        else:
+            self.error("Fator da expressão esperado.", productionNext, productionNext)
+
+    def prod_Other_Factors(self, productionNext):
+        if self.getCurrentToken() in ["MULTIPLY_SIGN", "DIVIDE_SIGN"]:#criar divide
+            self.loadNextSymbol()
+            self.prod_Factor(productionNext)
+
+    def prod_Variables2(self, productionNext):
+        while True:
+
+            if self.isCurrentToken("IDENTIFIER"):
+                self.loadNextSymbol()
+                if self.getCurrentToken() != "COMMA_SYMB":
+                    return
+            else:
+                if not self.error("Variável esperada", "COMMA_SYMB", productionNext):
+                    return
+
+            self.loadNextSymbol()
+
