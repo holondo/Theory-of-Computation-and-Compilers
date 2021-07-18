@@ -14,3 +14,4 @@ read,READ_SYMB
 write,WRITE_SYMB
 while,WHILE_SYMB
 for,FOR_SYMB
+do,DO_SYMB
