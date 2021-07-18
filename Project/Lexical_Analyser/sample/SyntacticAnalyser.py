@@ -199,19 +199,19 @@ class SyntacticAnalyser:
         if self.isCurrentToken("COLON_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("Dois pontos esperado.", currentNext= "TYPE_SYMB", productionNext= productionNext) == False:
+            if not self.error("Dois pontos esperado.", currentNext= "TYPE_SYMB", productionNext= productionNext):
                 return
         
         if self.isCurrentToken("TYPE_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("Tipo esperado.", currentNext= "SEMICOLON_SYMB", productionNext= productionNext) == False:
+            if not self.error("Tipo esperado.", currentNext= "SEMICOLON_SYMB", productionNext= productionNext):
                 return
         
         if self.isCurrentToken("SEMICOLON_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("; esperado.", currentNext= productionNext, productionNext= productionNext) == False:
+            if not self.error("; esperado.", currentNext= productionNext, productionNext= productionNext):
                 return
 
     def prod_dc_p(self):
@@ -219,14 +219,14 @@ class SyntacticAnalyser:
         if self.isCurrentToken("PROCEDURE_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("procedure esperado.", currentNext= "IDENTIFIER", productionNext = thisRulesNextSymbol) == False:
+            if not self.error("procedure esperado.", currentNext= "IDENTIFIER", productionNext = thisRulesNextSymbol):
                 self.errors.pop()
                 return
 
         if self.isCurrentToken("IDENTIFIER"):
                 self.loadNextSymbol()
         else:
-            if self.error("Identificador da funcao esperado.", currentNext= ["LEFT_PARENTHESIS", "SEMICOLON_SYMB"], productionNext = thisRulesNextSymbol) == False:
+            if not self.error("Identificador da funcao esperado.", currentNext= ["LEFT_PARENTHESIS", "SEMICOLON_SYMB"], productionNext = thisRulesNextSymbol):
                 return
         
         self.prod_Procedure_Parameters()
@@ -234,7 +234,7 @@ class SyntacticAnalyser:
         if self.isCurrentToken("SEMICOLON_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("; esperado.", currentNext= ["VAR_SYMB", "BEGIN_SYMB"], productionNext = thisRulesNextSymbol) == False:
+            if not self.error("; esperado.", currentNext= ["VAR_SYMB", "BEGIN_SYMB"], productionNext = thisRulesNextSymbol):
                 return
 
         #self.prod_Procedure_Body()
