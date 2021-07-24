@@ -123,7 +123,7 @@
     </style>
 </head>
     <body>
-        <div class="containe-fluid">
+        <div class="containe-fluid d-flex flex-column align-items-center justify-content-center">
             <div class="row">
                 <div class="imput-output col-md-6 imput d-flex align-items-center justify-content-center">
 					<div class="imput-camps d-flex flex-column justify-content-center">
@@ -147,7 +147,7 @@
                     <div class="show-data d-flex flex-column align-items-center justify-content-center">
                         
                         <h2 class="subTitulo text-center">[ Cadeia lida , Token correspondente]</h2>
-                        <div class="tg d-flex flex-column align-items-center justify-content-center">
+                        <div class="tg d-flex flex-column align-items-center">
                             {% if boolResult %}
                             {% for j in strProgram%}
                                 <p>{{j}}</p>
