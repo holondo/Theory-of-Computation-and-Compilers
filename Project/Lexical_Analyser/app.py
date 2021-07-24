@@ -18,8 +18,8 @@ def home():
         filePath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filePath)        
         file = open(filePath, 'r')
-        #show = sourceToLexer(file.read()) #Sends txtProgram's content to the "Parser" who returns Lexer's work
         strProgram = file.read()
+        # show = sourceToLexer(strProgram) #Sends txtProgram's content to the "Parser" who returns Lexer's work
         analyser = SyntacticAnalyser()
         show = analyser.analyse(strProgram)
 

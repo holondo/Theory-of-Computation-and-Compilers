@@ -27,7 +27,7 @@ class SyntacticAnalyser:
     
     ### Returns: true, if 
     def isCurrentToken(self, expectedToken) -> bool:
-        return (self.getCurrentToken() == expectedToken)
+        return (self.getCurrentToken() in expectedToken)
 
     def loadNextSymbol(self):
         if not self.programIsProcessed():
@@ -38,7 +38,14 @@ class SyntacticAnalyser:
                 if '\n' in self.symb[0]:
                     self.currentLine += 1
                 self.loadNextSymbol()
-        
+
+            if self.isCurrentToken("COMMENT_LINE"):
+                self.loadNextSymbol()
+
+            if self.isCurrentToken("UNCLOSED_COMMENT"):
+                self.errors.append(f"Erro léxico na linha {self.currentLine}: {self.symb}.")    
+                self.loadNextSymbol()
+                
     def analyse(self,strProgram) -> list:
         if not isinstance(strProgram, str):
             self.errors.append("Arquivo com problemas.\n")
@@ -123,18 +130,22 @@ class SyntacticAnalyser:
     def prod_Body(self):
 
         #-----DECLARATIONS
-        self.prod_dc_c()
-        while self.isCurrentToken("CONST_SYMB"):
+        while True:
             self.prod_dc_c()
-            
-        self.prod_dc_v()
-        while self.isCurrentToken("VAR_SYMB"):
+            while self.isCurrentToken("CONST_SYMB"):
+                self.prod_dc_c()
+                
             self.prod_dc_v()
+            while self.isCurrentToken("VAR_SYMB"):
+                self.prod_dc_v()
 
-        self.prod_dc_p()
-        while self.isCurrentToken("PROCEDURE_SYMB"):
             self.prod_dc_p()
-        #-----DECLARATIONS END
+            while self.isCurrentToken("PROCEDURE_SYMB"):
+                self.prod_dc_p()
+
+            if self.getCurrentToken() not in ["CONST_SYMB","VAR_SYMB","PROCEDURE_SYMB"]:
+                break
+            #-----DECLARATIONS END
 
         if self.isCurrentToken("BEGIN_SYMB"):
             self.loadNextSymbol()
@@ -276,7 +287,7 @@ class SyntacticAnalyser:
             return
     
     def prod_Commands(self):
-        ruleNext = ["END_SYMB", "DOT_SYMB"]
+        ruleNext = ["END_SYMB"]
         cmdTokens = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
         allNexts = ruleNext + cmdTokens + ["SEMICOLON_SYMB"]
         
@@ -289,7 +300,8 @@ class SyntacticAnalyser:
             self.verifyNecessaryToken("SEMICOLON_SYMB", "';' esperado.", cmdTokens, cmdTokens + ruleNext)
 
             if self.getCurrentToken() not in cmdTokens:#mudar o not in p/ todos pq se o comportamento for inesperado, para
-                return
+                if self.programIsProcessed():
+                    return
 
     def prod_CMD(self, productionNext):
 
@@ -369,10 +381,7 @@ class SyntacticAnalyser:
 
             self.loadNextSymbol()
 
-            if not self.verifyNecessaryToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", productionNext):
-                return
-
-            if not self.verifyNecessaryToken("IDENTIFIER", "iterador esperado.", "ATTR_SYMB", productionNext):
+            if not self.verifyNecessaryToken("IDENTIFIER", "Iterador esperado.", "ATTR_SYMB", productionNext):
                 return
 
             if not self.verifyNecessaryToken("ATTR_SYMB", "':=' esperado.", ExpressionFirst, productionNext):
@@ -380,24 +389,17 @@ class SyntacticAnalyser:
             
             self.prod_Expression(productionNext + ["SEMICOLON_SYMB"])
 
-            if not self.verifyNecessaryToken("SEMICOLON_SYMB", "';' esperado.", ExpressionFirst, productionNext):
-                return
-
-            self.prod_Condition(productionNext + ["SEMICOLON_SYMB"])
-
-            if not self.verifyNecessaryToken("SEMICOLON_SYMB", "';' esperado.", CMDFirst, productionNext):
+            if not self.verifyNecessaryToken("TO_SYMB", "'to' esperado.", ExpressionFirst, productionNext):
                 return
             
-            self.prod_CMD(productionNext + ["RIGHT_PARENTHESIS"])
+            self.prod_Expression(productionNext + ["SEMICOLON_SYMB"])
 
-            if not self.verifyNecessaryToken("RIGHT_PARENTHESIS", "')' esperado.", CMDFirst, productionNext):
+            if not self.verifyNecessaryToken("DO_SYMB", "'do' esperado.", CMDFirst, productionNext):
                 return
 
             self.prod_CMD(productionNext)
-            
-
         else:
-            self.error("Comando esperado.", productionNext, productionNext)
+            self.error("Comando esperado.", productionNext, productionNext+["SEMICOLON_SYMB"])
 
     def prod_Condition(self, productionNext):
         ExpressionFirst = ["ADD_SIGN", "SUB_SIGN", "IDENTIFIER","UNSIGNED_INTEGER", "UNSIGNED_FLOAT", "LEFT_PARENTHESIS"]
@@ -413,10 +415,12 @@ class SyntacticAnalyser:
         self.prod_Expression(productionNext)
 
     def prod_Begin(self, productionNext):
+        CMDFirst = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
+
         if self.isCurrentToken("BEGIN_SYMB"):
             self.loadNextSymbol()
         else:
-            if self.error("begin esperado.", currentNext= ["WRITE_SYMB", "WHILE_SYMB", "IF_SYMB", "IDENTIFIER", "BEGIN","END_SYMB"], productionNext= "DOT_SYMB") == False:
+            if self.error("begin esperado.", currentNext= CMDFirst + ["END_SYMB"], productionNext= ["DOT_SYMB", "END_SYMB"]) == False:
                 return
         
         self.prod_Commands()

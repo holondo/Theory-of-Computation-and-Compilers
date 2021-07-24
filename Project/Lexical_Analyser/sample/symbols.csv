@@ -1,5 +1,5 @@
 Name,Token
-Program,PROGRAM_SYMB
+program,PROGRAM_SYMB
 begin,BEGIN_SYMB
 end,END_SYMB
 const,CONST_SYMB
@@ -15,3 +15,4 @@ write,WRITE_SYMB
 while,WHILE_SYMB
 for,FOR_SYMB
 do,DO_SYMB
+to,TO_SYMB
