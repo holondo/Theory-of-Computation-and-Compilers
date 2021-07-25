@@ -11,7 +11,7 @@ Use o package manager [pip](https://pip.pypa.io/en/stable/) para instalar as bib
 pip install -r requirements.txt
 ```
 ## Executar o programa 
-No diretório fonte:
+No diretório do projeto:
 
 ```bash
 flask run
