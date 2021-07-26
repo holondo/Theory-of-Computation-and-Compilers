@@ -95,6 +95,7 @@
     padding: 8px 16px;
     border: none;
     margin-top: 10px;
+    margin-bottom: 15px;
     width: 200px;
     background-image: linear-gradient(120deg, #a72879, #064497);
 }
@@ -105,7 +106,7 @@
 
 .tg{
     overflow: auto;
-    max-height: 100vh;
+    max-height: 50vh;
     width: 480px;
 }
 
@@ -123,10 +124,10 @@
     </style>
 </head>
     <body>
-        <div class="containe-fluid">
+        <div class="containe-fluid d-flex align-items-center justify-content-center">
             <div class="row">
                 <div class="imput-output col-md-6 imput d-flex align-items-center justify-content-center">
-					<div class="imput-camps d-flex flex-column justify-content-center">
+					<div class="imput-camps d-flex flex-column align-content-center justify-content-center">
                         <h1 class="titulo text-center">P-- Syntactic Analyser</h1>
                         <h2 class="subTitulo text-center">Selecione o arquivo com o código fonte e clique em "ANALYSE"</h2>
                         <div class="d-flex justify-content-center">
@@ -142,8 +143,8 @@
                             
                         </div>
                         {%if boolResult%}
-                        <div class="tg d-flex flex-column align-items-md-start justify-content-lg-start">
-                        <p><h2 class="subTitulo text-center">Código:</h2></p>
+                        <div class="tg d-flex flex-column align-items-center" style="padding-top: 15px;">
+                        <p><h2 class="subTitulo text-start">Código:</h2></p>
                             {% for line in strProgram%}
                                 <p>{{line}}</p>
                             {% endfor %}
@@ -155,7 +156,7 @@
                     <div class="show-data d-flex flex-column align-items-center justify-content-center">
                         
                         <h2 class="subTitulo text-center">Mensagens da compilação:</h2>
-                        <div class="tg d-flex flex-column align-items-center justify-content-center">
+                        <div class="tg d-flex flex-column align-items-center">
                             {% if boolResult %}
                             {% for j in messages%}
                                 <p>{{j}}</p>
