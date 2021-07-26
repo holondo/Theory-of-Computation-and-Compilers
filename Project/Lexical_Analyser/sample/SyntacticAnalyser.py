@@ -195,7 +195,7 @@ class SyntacticAnalyser:
         
     
     def prod_dc_v(self):
-        productionNext = ["VAR_SYMB","PROCEDURE_SYMB", "BEGIN_SYMB"]
+        productionNext = ["CONST_SYMB","VAR_SYMB", "PROCEDURE_SYMB", "BEGIN_SYMB"]
         if self.isCurrentToken("VAR_SYMB"):
             self.loadNextSymbol()
         else:
@@ -226,7 +226,7 @@ class SyntacticAnalyser:
                 return
 
     def prod_dc_p(self):
-        thisRulesNextSymbol  = ["PROCEDURE_SYMB", "BEGIN_SYMB"]
+        thisRulesNextSymbol  = ["CONST_SYMB","VAR_SYMB", "PROCEDURE_SYMB", "BEGIN_SYMB"]
         if self.isCurrentToken("PROCEDURE_SYMB"):
             self.loadNextSymbol()
         else:
@@ -287,7 +287,7 @@ class SyntacticAnalyser:
             return
     
     def prod_Commands(self):
-        ruleNext = ["END_SYMB"]
+        ruleNext = ["END_SYMB", "DOT_SYMB"]
         cmdTokens = ["IDENTIFIER", "READ_SYMB", "WRITE_SYMB", "READ_SYMB", "FOR_SYMB", "IF_SYMB", "BEGIN_SYMB"]
         allNexts = ruleNext + cmdTokens + ["SEMICOLON_SYMB"]
         
