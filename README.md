@@ -21,7 +21,7 @@ O servidor será hospedado por padrão no endereço [http://localhost:5000/](htt
 
 Ao entrar no site essa é a tela inicial:
 
-![alt text](https://github.com/holondo/Theory-of-Computation-and-Compilators/blob/holandarush/Imagens/inicial.png)
+![alt text](https://github.com/holondo/Theory-of-Computation-and-Compilators/blob/holandarush/Imagens/sintatico_1.png)
 
 
 Clique em 'Browse' para selecionar o arquivo fonte da linguagem P em formato .txt:
@@ -31,5 +31,5 @@ Clique em 'Browse' para selecionar o arquivo fonte da linguagem P em formato .tx
 
 E então clique no botão 'Analyze' para que o site mostre os tokens correspondentes do programa selecionado:
 
-![alt text](https://github.com/holondo/Theory-of-Computation-and-Compilators/blob/holandarush/Imagens/resultado.png)
+![alt text](https://github.com/holondo/Theory-of-Computation-and-Compilators/blob/holandarush/Imagens/sintatico_2.png)
 
