@@ -239,6 +239,19 @@ class SyntacticAnalyser:
         
         self.prod_Procedure_Parameters()
 
+        if self.isCurrentToken("VAR_SYMB"):
+            self.prod_dc_v()
+            while self.isCurrentToken("VAR_SYMB"):
+                self.prod_dc_v()
+
+            self.prod_Begin(thisRulesNextSymbol)
+
+            if self.isCurrentToken("SEMICOLON_SYMB"):
+                self.loadNextSymbol()
+            else:
+                if not self.error("; esperado.", currentNext= thisRulesNextSymbol, productionNext = thisRulesNextSymbol):
+                    return
+                    
         if self.isCurrentToken("SEMICOLON_SYMB"):
             self.loadNextSymbol()
         else:
@@ -261,7 +274,7 @@ class SyntacticAnalyser:
         return True
 
     def prod_Procedure_Parameters(self):
-        ruleNext = ["SEMICOLON_SYMB"]
+        ruleNext = ["SEMICOLON_SYMB", "VAR_SYMB"]
         if not self.verifyPossibleToken("LEFT_PARENTHESIS", "'(' esperado.", "IDENTIFIER", ruleNext):
             return
         
