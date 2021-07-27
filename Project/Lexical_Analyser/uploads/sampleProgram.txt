@@ -1,2 +1,14 @@
 program p:
-for()
+var xic, vuc, li : integer;
+var xic : integer;
+const xo = 9.6;
+procedure lil (x,y:real; x,y:integer)
+    var xic, vuc, li : integer;
+    var xic : integer;
+    begin
+        read(x);
+    end;;
+
+begin
+    read(x);
+end.
